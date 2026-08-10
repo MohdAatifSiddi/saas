@@ -29,7 +29,7 @@ function VerifyEmailForm() {
 
     const { error: resendError } = await authClient.sendVerificationEmail({
       email: emailQuery,
-      callbackURL: '/dashboard',
+      callbackURL: `${window.location.origin}/dashboard`,
     });
 
     if (resendError) {

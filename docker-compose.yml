@@ -24,7 +24,7 @@ services:
     environment:
       - DATABASE_URL=postgresql://user:password@postgres:5432/db_name
       - BETTER_AUTH_SECRET=generate_a_strong_secret_key_here
-      - BETTER_AUTH_URL=http://localhost:3001
+      - BETTER_AUTH_URL=http://localhost:3001/api/auth
       - FRONTEND_URL=http://localhost:3000
       - PORT=3001
       - RESEND_API_KEY=your_resend_api_key

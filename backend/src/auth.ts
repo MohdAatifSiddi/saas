@@ -50,6 +50,7 @@ const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 export const auth = betterAuth({
+  baseURL: process.env.BETTER_AUTH_URL || 'http://localhost:3001/api/auth',
   database: prismaAdapter(prisma, {
     provider: 'postgresql',
   }),
@@ -113,15 +114,11 @@ export const auth = betterAuth({
       clientId: process.env.GOOGLE_CLIENT_ID || '',
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
     },
-    apple: {
-      clientId: process.env.APPLE_CLIENT_ID || '',
-      clientSecret: process.env.APPLE_CLIENT_SECRET || '',
-    },
   },
   account: {
     accountLinking: {
       enabled: true,
-      trustedProviders: ['google', 'apple'],
+      trustedProviders: ['google'],
     },
   },
   rateLimit: {
