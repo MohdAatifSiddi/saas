@@ -124,5 +124,20 @@ export const auth = betterAuth({
       trustedProviders: ['google', 'apple'],
     },
   },
+  rateLimit: {
+    window: 60,
+    max: 100, // Strict IP-based throttling for credential-stuffing prevention
+  },
+  session: {
+    expiresIn: 60 * 60 * 24 * 7, // 7 days
+    updateAge: 60 * 60 * 24, // 1 day
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60, // 5 minutes
+    },
+  },
+  advanced: {
+    cookiePrefix: 'saas-platform',
+  },
   trustedOrigins: [process.env.FRONTEND_URL || 'http://localhost:3000'],
 });

@@ -66,6 +66,7 @@ model Account {
 
   @@map("account")
   @@index([userId])
+  @@unique([providerId, accountId])
 }
 
 model Verification {

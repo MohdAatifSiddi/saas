@@ -6,6 +6,7 @@ import { App } from 'supertest/types';
 
 // Mock the @thallesp/nestjs-better-auth module to bypass ESM compilation and database dependencies during tests
 jest.mock('@thallesp/nestjs-better-auth', () => {
+  const { SetMetadata } = require('@nestjs/common');
   return {
     AuthModule: {
       forRoot: () => ({
@@ -15,7 +16,7 @@ jest.mock('@thallesp/nestjs-better-auth', () => {
       }),
     },
     Session: () => () => {},
-    AllowAnonymous: () => () => {},
+    AllowAnonymous: () => SetMetadata('PUBLIC', true),
     OptionalAuth: () => () => {},
   };
 });
@@ -28,13 +29,18 @@ jest.mock('../src/auth', () => {
         getSession: jest.fn().mockImplementation(async ({ headers }) => {
           if (headers.authorization === 'Bearer mock-token') {
             return {
-              user: { id: '1', name: 'Test User', role: 'user' },
+              user: { id: '1', name: 'Test User', role: 'user', banned: false },
               session: {},
             };
           }
-          if (headers.authorization === 'Bearer admin-token') {
+          if (headers.authorization === 'Bearer banned-token') {
             return {
-              user: { id: '2', name: 'Admin User', role: 'admin' },
+              user: {
+                id: '2',
+                name: 'Banned User',
+                role: 'user',
+                banned: true,
+              },
               session: {},
             };
           }
@@ -83,5 +89,12 @@ describe('AppController (e2e)', () => {
       .expect((res) => {
         expect(res.body.message).toContain('Test User');
       });
+  });
+
+  it('/dashboard (GET) - Unauthorized for banned user token', () => {
+    return request(app.getHttpServer())
+      .get('/dashboard')
+      .set('Authorization', 'Bearer banned-token')
+      .expect(401);
   });
 });
