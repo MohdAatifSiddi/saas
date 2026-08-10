@@ -1,0 +1,24 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": ".",
+  "testEnvironment": "node",
+  "testRegex": ".e2e-spec.ts$",
+  "transform": {
+    "^.+\\.[tj]s$|^.+\\.mjs$": [
+      "ts-jest",
+      {
+        "diagnostics": {
+          "ignoreCodes": [1343]
+        },
+        "astTransformers": {
+          "before": [
+            "ts-jest-mock-import-meta"
+          ]
+        }
+      }
+    ]
+  },
+  "transformIgnorePatterns": [
+    "node_modules[\\\\/](?!.*(@thallesp|better-auth))"
+  ]
+}

@@ -1,0 +1,28 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { auth } from '../auth';
+
+@Injectable()
+export class AuthGuard implements CanActivate {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest();
+    try {
+      const session = await auth.api.getSession({
+        headers: request.headers,
+      });
+      if (!session || !session.user) {
+        throw new UnauthorizedException('UNAUTHORIZED');
+      }
+      request.user = session.user;
+      request.session = session.session;
+      return true;
+    } catch {
+      throw new UnauthorizedException('UNAUTHORIZED');
+    }
+  }
+}
