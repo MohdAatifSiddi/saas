@@ -54,7 +54,12 @@ export const ModelName = {
   User: 'User',
   Session: 'Session',
   Account: 'Account',
-  Verification: 'Verification'
+  Verification: 'Verification',
+  Tenant: 'Tenant',
+  Membership: 'Membership',
+  Document: 'Document',
+  DocumentAcl: 'DocumentAcl',
+  DocumentChunk: 'DocumentChunk'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -75,12 +80,12 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 
 export const UserScalarFieldEnum = {
   id: 'id',
-  name: 'name',
   email: 'email',
-  emailVerified: 'emailVerified',
-  image: 'image',
+  name: 'name',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  emailVerified: 'emailVerified',
+  image: 'image',
   role: 'role',
   banned: 'banned',
   banReason: 'banReason',
@@ -134,6 +139,62 @@ export const VerificationScalarFieldEnum = {
 } as const
 
 export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
+
+
+export const TenantScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  createdAt: 'createdAt'
+} as const
+
+export type TenantScalarFieldEnum = (typeof TenantScalarFieldEnum)[keyof typeof TenantScalarFieldEnum]
+
+
+export const MembershipScalarFieldEnum = {
+  tenantId: 'tenantId',
+  userId: 'userId',
+  role: 'role',
+  active: 'active'
+} as const
+
+export type MembershipScalarFieldEnum = (typeof MembershipScalarFieldEnum)[keyof typeof MembershipScalarFieldEnum]
+
+
+export const DocumentScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  ownerId: 'ownerId',
+  objectKey: 'objectKey',
+  originalName: 'originalName',
+  mediaType: 'mediaType',
+  byteSize: 'byteSize',
+  status: 'status',
+  createdAt: 'createdAt'
+} as const
+
+export type DocumentScalarFieldEnum = (typeof DocumentScalarFieldEnum)[keyof typeof DocumentScalarFieldEnum]
+
+
+export const DocumentAclScalarFieldEnum = {
+  documentId: 'documentId',
+  userId: 'userId',
+  canRead: 'canRead',
+  canEdit: 'canEdit'
+} as const
+
+export type DocumentAclScalarFieldEnum = (typeof DocumentAclScalarFieldEnum)[keyof typeof DocumentAclScalarFieldEnum]
+
+
+export const DocumentChunkScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  documentId: 'documentId',
+  chunkIndex: 'chunkIndex',
+  content: 'content',
+  embeddingRef: 'embeddingRef'
+} as const
+
+export type DocumentChunkScalarFieldEnum = (typeof DocumentChunkScalarFieldEnum)[keyof typeof DocumentChunkScalarFieldEnum]
 
 
 export const SortOrder = {

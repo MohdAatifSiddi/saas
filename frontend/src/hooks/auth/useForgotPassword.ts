@@ -36,6 +36,7 @@ async function forgotPasswordFetcher(
   });
 
   if (error) {
+    console.error('Raw Better Auth forgotPassword error:', error);
     // Keep account existence and provider details opaque to the user.
     if (error.status === 429) {
       throw new Error('Too many reset requests. Please wait before trying again.');

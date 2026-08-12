@@ -22,6 +22,7 @@ async function resetPasswordFetcher(
   });
 
   if (error) {
+    console.error('Raw Better Auth resetPassword error:', error);
     if (error.status === 429) {
       throw new Error('Too many requests. Please wait before trying again.');
     }

@@ -14,20 +14,25 @@ datasource db {
 }
 
 model User {
-  id            String    @id
-  name          String
-  email         String    @unique
+  id           String       @id
+  email        String       @unique
+  name         String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  // Better Auth required fields
   emailVerified Boolean
   image         String?
-  createdAt     DateTime
-  updatedAt     DateTime
-  sessions      Session[]
-  accounts      Account[]
+  role          String?
+  banned        Boolean?  @default(false)
+  banReason     String?
+  banExpires    DateTime?
 
-  role       String?
-  banned     Boolean?  @default(false)
-  banReason  String?
-  banExpires DateTime?
+  sessions     Session[]
+  accounts     Account[]
+  memberships  Membership[]
+  documents    Document[]   @relation("DocumentOwner")
+  documentAcls DocumentAcl[]
 
   @@map("user")
 }
@@ -80,6 +85,77 @@ model Verification {
 
   @@map("verification")
   @@index([identifier])
+}
+
+model Tenant {
+  id           String       @id @default(cuid())
+  name         String
+  memberships  Membership[]
+  documents    Document[]
+  chunks       DocumentChunk[]
+  createdAt    DateTime     @default(now())
+
+  @@map("tenant")
+}
+
+model Membership {
+  tenantId     String
+  userId       String
+  role         String
+  active       Boolean      @default(true)
+  tenant       Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([tenantId, userId])
+  @@index([userId, active])
+  @@map("membership")
+}
+
+model Document {
+  id           String       @id @default(cuid())
+  tenantId     String
+  ownerId      String
+  objectKey    String       @unique
+  originalName String
+  mediaType    String
+  byteSize     Int
+  status       String       @default("uploaded")
+  tenant       Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  owner        User         @relation("DocumentOwner", fields: [ownerId], references: [id])
+  chunks       DocumentChunk[]
+  acl          DocumentAcl[]
+  createdAt    DateTime     @default(now())
+
+  @@index([tenantId, createdAt])
+  @@index([tenantId, ownerId])
+  @@map("document")
+}
+
+model DocumentAcl {
+  documentId   String
+  userId       String
+  canRead      Boolean      @default(false)
+  canEdit      Boolean      @default(false)
+  document     Document     @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([documentId, userId])
+  @@map("document_acl")
+}
+
+model DocumentChunk {
+  id           String       @id @default(cuid())
+  tenantId     String
+  documentId   String
+  chunkIndex   Int
+  content      String
+  embeddingRef String
+  tenant       Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  document     Document     @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@unique([documentId, chunkIndex])
+  @@index([tenantId, documentId])
+  @@map("document_chunk")
 }
 
 

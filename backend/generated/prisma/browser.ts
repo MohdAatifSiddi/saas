@@ -37,3 +37,28 @@ export type Account = Prisma.AccountModel
  * 
  */
 export type Verification = Prisma.VerificationModel
+/**
+ * Model Tenant
+ * 
+ */
+export type Tenant = Prisma.TenantModel
+/**
+ * Model Membership
+ * 
+ */
+export type Membership = Prisma.MembershipModel
+/**
+ * Model Document
+ * 
+ */
+export type Document = Prisma.DocumentModel
+/**
+ * Model DocumentAcl
+ * 
+ */
+export type DocumentAcl = Prisma.DocumentAclModel
+/**
+ * Model DocumentChunk
+ * 
+ */
+export type DocumentChunk = Prisma.DocumentChunkModel
