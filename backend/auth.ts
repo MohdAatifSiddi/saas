@@ -77,9 +77,11 @@ async function sendTransactionalEmail(
       html,
     });
     if (result.error) {
+      console.error('Resend API returned error:', result.error);
       throw new Error('FAILED_TO_SEND_EMAIL');
     }
-  } catch {
+  } catch (err) {
+    console.error('Error sending transactional email:', err);
     // Deliberately hiding internal stack traces, API keys, and exact failure states.
     // The user's PII (email) is also not logged here for compliance reasons.
     throw new Error('FAILED_TO_SEND_EMAIL');

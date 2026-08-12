@@ -22,7 +22,15 @@ async function resetPasswordFetcher(
   });
 
   if (error) {
-    console.error('Raw Better Auth resetPassword error:', error);
+    const errObj = error as any;
+    console.error('Raw Better Auth resetPassword error:', {
+      message: errObj.message,
+      status: errObj.status,
+      code: errObj.code,
+      statusText: errObj.statusText,
+      body: errObj.body,
+      raw: error,
+    });
     if (error.status === 429) {
       throw new Error('Too many requests. Please wait before trying again.');
     }

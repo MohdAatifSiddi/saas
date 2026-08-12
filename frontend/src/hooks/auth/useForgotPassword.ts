@@ -29,14 +29,21 @@ async function forgotPasswordFetcher(
     throw new Error('Please enter a valid email address.');
   }
 
-  // @ts-expect-error - forgetPassword is not inferred correctly without the server config
-  const { data, error } = await authClient.forgetPassword({
+  const { data, error } = await authClient.requestPasswordReset({
     email,
     redirectTo,
   });
 
   if (error) {
-    console.error('Raw Better Auth forgotPassword error:', error);
+    const errObj = error as any;
+    console.error('Raw Better Auth forgotPassword error:', {
+      message: errObj.message,
+      status: errObj.status,
+      code: errObj.code,
+      statusText: errObj.statusText,
+      body: errObj.body,
+      raw: error,
+    });
     // Keep account existence and provider details opaque to the user.
     if (error.status === 429) {
       throw new Error('Too many reset requests. Please wait before trying again.');

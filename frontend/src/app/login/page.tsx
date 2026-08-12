@@ -40,12 +40,10 @@ export default async function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-background p-6 md:p-10">
-      <div className="w-full max-w-sm">
-        <Suspense fallback={<div className="text-center text-sm text-muted-foreground">Loading...</div>}>
-          <LoginForm />
-        </Suspense>
-      </div>
-    </div>
+    <main className="w-full">
+      <Suspense fallback={<div className="flex min-h-screen items-center justify-center">Loading...</div>}>
+        <LoginForm />
+      </Suspense>
+    </main>
   )
 }
