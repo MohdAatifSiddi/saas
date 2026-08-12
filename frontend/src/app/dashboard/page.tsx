@@ -4,45 +4,67 @@ import { authClient } from '@/lib/auth-client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { GalleryVerticalEndIcon } from "lucide-react";
 import LogoutButton from './logout-button';
+import { Session, User } from 'better-auth';
+import { apiRoot } from '@/lib/env';
 
 export default async function DashboardPage() {
   const reqHeaders = await headers();
-  // Validate session against the backend
-  const { data: session, error } = await authClient.getSession({
-    fetchOptions: {
-      headers: reqHeaders,
-    }
-  });
+  
+  // Validate session against the backend with an explicit timeout (fail closed)
+  const sessionController = new AbortController();
+  const sessionTimeoutId = setTimeout(() => sessionController.abort(), 3000);
 
-  if (error || !session) {
-    redirect('/login');
+  let sessionResult: { session: Session; user: User } | null = null;
+  try {
+    const { data, error } = await authClient.getSession({
+      fetchOptions: {
+        headers: reqHeaders,
+        signal: sessionController.signal,
+      }
+    });
+    if (!error && data) {
+      sessionResult = data;
+    }
+  } catch (e) {
+    console.error('Session validation timed out or failed:', e);
+  } finally {
+    clearTimeout(sessionTimeoutId);
+  }
+
+  if (!sessionResult) {
+    redirect('/login?error=session_expired');
   }
 
   // Perform server-side call to the protected backend /dashboard API endpoint
-  const authUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/auth';
-  const backendBaseUrl = authUrl.replace('/api/auth', '');
+  const backendBaseUrl = apiRoot;
   
-  let dashboardData: { message: string; user: any } | null = null;
+  let dashboardData: { message: string; user: unknown } | null = null;
   let fetchError = '';
 
-  try {
+  const dashboardController = new AbortController();
+  const dashboardTimeoutId = setTimeout(() => dashboardController.abort(), 3000);
+
+  try {0
     const res = await fetch(`${backendBaseUrl}/dashboard`, {
       headers: {
         cookie: reqHeaders.get('cookie') || '',
       },
       cache: 'no-store', // Always get fresh data
+      signal: dashboardController.signal,
     });
 
     if (res.ok) {
       dashboardData = await res.json();
     } else if (res.status === 401 || res.status === 403) {
-      redirect('/login');
+      redirect('/login?error=session_expired');
     } else {
       fetchError = 'Unable to fetch secure workspace information.';
     }
   } catch (e) {
     console.error('Error fetching dashboard data from backend:', e);
     fetchError = 'Secure backend data service is currently unreachable.';
+  } finally {
+    clearTimeout(dashboardTimeoutId);
   }
 
   return (
@@ -66,10 +88,10 @@ export default async function DashboardPage() {
              ) : (
                <>
                  <p className="text-lg font-semibold text-indigo-600">
-                   {dashboardData?.message || `Welcome back, ${session.user.name || session.user.email}!`}
+                   {dashboardData?.message || `Welcome back, ${sessionResult.user.name || sessionResult.user.email}!`}
                  </p>
                  <p className="text-xs text-muted-foreground">
-                   Authenticated Securely as: <span className="font-mono">{session.user.email}</span>
+                   Authenticated Securely as: <span className="font-mono">{sessionResult.user.email}</span>
                  </p>
                </>
              )}

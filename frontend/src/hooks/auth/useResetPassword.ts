@@ -7,9 +7,15 @@ export interface ResetPasswordVars {
 }
 
 async function resetPasswordFetcher(
-  key: string,
-  { arg }: { arg: ResetPasswordVars }
+  _key: string,
+  { arg }: { arg: ResetPasswordVars },
 ) {
+  // Do not log these values. The token is a credential and the password must
+  // never be copied, transformed, or persisted by this hook.
+  if (!arg.token || arg.token.length > 4096 || !arg.newPassword) {
+    throw new Error('The reset link is invalid or has expired.');
+  }
+
   const { data, error } = await authClient.resetPassword({
     newPassword: arg.newPassword,
     token: arg.token,
@@ -19,26 +25,20 @@ async function resetPasswordFetcher(
     if (error.status === 429) {
       throw new Error('Too many requests. Please wait before trying again.');
     }
-    // Safeguard for invalid/expired token responses
     if (error.code === 'INVALID_TOKEN' || error.code === 'EXPIRED_TOKEN') {
-      throw new Error('INVALID_OR_EXPIRED_TOKEN');
+      throw new Error('The reset link is invalid or has expired.');
     }
-    throw new Error(error.message || 'Unable to reset your password. Please try again.');
+    throw new Error('Unable to reset your password. Please try again.');
   }
 
   return data;
 }
 
 export function useResetPassword() {
-  const { trigger, isMutating, error, data } = useSWRMutation(
+  const { trigger, isMutating, error, data, reset } = useSWRMutation(
     'auth/reset-password',
-    resetPasswordFetcher
+    resetPasswordFetcher,
   );
 
-  return {
-    trigger,
-    isMutating,
-    error,
-    data,
-  };
+  return { trigger, isMutating, error, data, reset };
 }

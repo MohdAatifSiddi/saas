@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -21,10 +21,16 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirectPath = searchParams.get("redirect") || "/dashboard"
+  const errorParam = searchParams.get("error")
+
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+
+  const expiredMessage = errorParam === "session_expired" ? "Your session has expired. Please sign in again." : ""
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -42,14 +48,19 @@ export function LoginForm({
       return
     }
 
-    router.push("/dashboard")
+    // Direct the user to their original destination if available, otherwise /dashboard
+    router.push(redirectPath)
     router.refresh()
   }
 
   const handleOAuthLogin = async (provider: "google") => {
+    const callback = redirectPath.startsWith("/")
+      ? `${window.location.origin}${redirectPath}`
+      : `${window.location.origin}/dashboard`
+
     await authClient.signIn.social({
       provider,
-      callbackURL: `${window.location.origin}/dashboard`,
+      callbackURL: callback,
     })
   }
 
@@ -69,6 +80,12 @@ export function LoginForm({
               Don&apos;t have an account yet? <a href="/signup">Sign up</a>
             </FieldDescription>
           </div>
+
+          {expiredMessage && !error && (
+            <Alert variant="default" className="border-indigo-500 bg-indigo-50/10 text-indigo-600">
+              <AlertDescription className="text-indigo-600 font-medium">{expiredMessage}</AlertDescription>
+            </Alert>
+          )}
 
           {error && (
             <Alert variant="destructive">

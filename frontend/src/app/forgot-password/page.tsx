@@ -48,6 +48,7 @@ export default function ForgotPasswordPage() {
       setSuccess(true);
     } catch (err: unknown) {
       const error = err as Error;
+      console.error('Password reset request failed:', error);
       // We still transition to success state to satisfy the generic security requirements,
       // EXCEPT for rate-limiting errors which are helpful to surface.
       if (error.message && error.message.includes('Too many reset requests')) {

@@ -23,52 +23,63 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+This repository contains the SaaS Platform NestJS API and Better Auth integration. It uses PostgreSQL through Prisma, Resend for transactional email, and optional Google sign-in.
+
+The application is designed as an authenticated API: the root route is public, while other routes are protected by the custom global authentication guard unless explicitly marked anonymous. Protected controllers must still enforce resource-level authorization and return allowlisted DTOs rather than raw Better Auth or Prisma records.
 
 ## Project setup
 
+Use Node.js 22 or newer, pnpm, and PostgreSQL. The repository must contain a committed `pnpm-lock.yaml`; CI and Docker builds use `pnpm install --frozen-lockfile`.
+
 ```bash
-$ pnpm install
+pnpm install
+pnpm prisma generate
+cp .env.example .env
 ```
+
+Never commit `.env` or any real credential. Use the deployment platform’s secret manager in production. `BETTER_AUTH_URL` must be the canonical authentication API URL, normally `https://api.example.com/api/auth`. `FRONTEND_URL` must be the exact browser origin without a path, query string, or fragment, and production origins must use HTTPS. Generate `BETTER_AUTH_SECRET` with `openssl rand -base64 32` or stronger. Configure `RESEND_API_KEY` and `EMAIL_FROM` when email verification or password reset is enabled. Configure Google credentials together, or leave both empty to disable Google sign-in.
 
 ## Compile and run the project
 
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+pnpm run start:dev
+pnpm run build
+pnpm run start:prod
 ```
 
-## Run tests
+Run migrations as an explicit deployment step with `pnpm prisma migrate deploy`; application startup must not silently mutate the schema.
+
+## Run tests and checks
 
 ```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+pnpm run test
+pnpm run test:e2e
+pnpm run test:cov
+pnpm run lint
+pnpm run build
 ```
+
+Before release, test expired, malformed, revoked, and banned sessions; password-reset expiry; email-enumeration behavior; OAuth callback validation; CORS preflight; oversized payloads; and unauthorized access to every protected route. Run a dependency audit and validate the production migration path against a disposable PostgreSQL database.
 
 ## Deployment
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+The production Dockerfile is a single-package multi-stage build. It installs from a frozen lockfile, generates Prisma Client, builds the application, runs as a non-root user, exposes a health check, and does not copy `.env` into the image.
 
 ```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+docker build --pull -t saas-backend:latest .
+docker run --rm -p 3001:3001 saas-backend:latest
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Supply production secrets through encrypted runtime configuration rather than an image layer or a shared `.env` file. Verify that the reverse proxy terminates TLS, forwards only trusted proxy headers, and exposes only the required public API port. Configure centralized logs and metrics without recording passwords, reset tokens, session cookies, authorization headers, database URLs, provider keys, or complete personal records.
+
+## Security references
+
+- [NestJS security and Helmet](https://docs.nestjs.com/security/helmet)
+- [NestJS CORS](https://docs.nestjs.com/security/cors)
+- [NestJS validation](https://docs.nestjs.com/techniques/validation)
+- [Better Auth NestJS integration](https://better-auth.com/docs/integrations/nestjs)
+- [Better Auth security](https://better-auth.com/docs/reference/security)
+- [Prisma PostgreSQL connector](https://www.prisma.io/docs/orm/core-concepts/supported-databases/postgresql)
 
 ## Resources
 
