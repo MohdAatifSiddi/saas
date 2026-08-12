@@ -97,7 +97,7 @@ function ResetPasswordForm() {
         <CardContent className="text-center text-sm text-muted-foreground">
           Please request a new password reset link to update your account password.
         </CardContent>
-        <CardFooter className="flex flex-col gap-2">
+        <CardFooter className="flex flex-col gap-22">
           <Button className="w-full" onClick={() => router.push('/forgot-password')}>
             Request new link
           </Button>
