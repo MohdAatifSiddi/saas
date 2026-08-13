@@ -22,7 +22,7 @@ jest.mock('@thallesp/nestjs-better-auth', () => {
             useValue: {
               canActivate: (context: any) => {
                 const request = context.switchToHttp().getRequest();
-                if (request.path === '/') return true;
+                if (request.path === '/health') return true;
                 const token = request.headers.authorization;
                 if (token?.trim() === 'Bearer mock-token') {
                   request.user = {
@@ -117,11 +117,14 @@ describe('AppController (e2e)', () => {
     await app.close();
   });
 
-  it('/ (GET) - Public', () => {
+  it('/health (GET) - Public', () => {
     return request(app.getHttpServer())
-      .get('/')
+      .get('/health')
       .expect(200)
-      .expect('Hello World!');
+      .expect((res) => {
+        expect(res.body).toHaveProperty('status', 'ok');
+        expect(res.body).toHaveProperty('timestamp');
+      });
   });
 
   it('/dashboard (GET) - Unauthorized without token', () => {

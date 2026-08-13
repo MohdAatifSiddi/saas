@@ -25,16 +25,29 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
       fill="#FBBC05"
     />
     <path
-      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.16 7.07l3.68 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.47 2.16 7.07l3.68 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
       fill="#EA4335"
     />
   </svg>
 );
 
+function isSafeRedirectTo(value: string): boolean {
+  const trimmed = value.trim();
+  if (!trimmed || trimmed.startsWith('//')) return false;
+
+  try {
+    const url = new URL(trimmed, window.location.origin);
+    return url.origin === window.location.origin && url.protocol === window.location.protocol;
+  } catch {
+    return false;
+  }
+}
+
 export function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const redirectPath = searchParams.get("redirect") || "/dashboard"
+  const rawRedirect = searchParams.get("redirect") || "/dashboard"
+  const redirectPath = isSafeRedirectTo(rawRedirect) ? rawRedirect : "/dashboard"
   const errorParam = searchParams.get("error")
 
   const [email, setEmail] = useState("")

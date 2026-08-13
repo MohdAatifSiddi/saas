@@ -10,7 +10,6 @@ COPY backend/package.json backend/
 RUN pnpm install --frozen-lockfile --filter backend...
 
 COPY backend/ backend/
-COPY prisma/ prisma/
 
 WORKDIR /app/backend
 RUN npx prisma generate

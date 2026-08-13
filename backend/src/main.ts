@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import type { NextFunction, Request, Response } from 'express';
 import { AppModule } from './app.module';
 import { SafeExceptionFilter } from './common/filters/safe-exception.filter';
@@ -89,6 +90,19 @@ async function bootstrap() {
   );
 
   app.useGlobalFilters(new SafeExceptionFilter());
+
+  if (
+    process.env.NODE_ENV !== 'production' ||
+    process.env.ENABLE_SWAGGER === 'true'
+  ) {
+    const config = new DocumentBuilder()
+      .setTitle('Weybre Legal AI API')
+      .setDescription('API documentation for the Weybre Legal AI platform')
+      .setVersion('1.0')
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('docs', app, document);
+  }
 
   await app.listen(parsePort(), '0.0.0.0');
 }

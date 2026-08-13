@@ -113,18 +113,18 @@ export const auth = betterAuth({
       const htmlContent = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e4e4e7; border-radius: 8px;">
           <h2 style="color: #4f46e5; margin-bottom: 24px;">Reset your password</h2>
-          <p>We received a request to reset your password for your SaaS Platform account. You can update your password by clicking the secure button below:</p>
+          <p>We received a request to reset your password for your Weybre Legal AI account. You can update your password by clicking the secure button below:</p>
           <div style="margin: 32px 0; text-align: center;">
             <a href="${safeUrl}" style="background-color: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Reset Password</a>
           </div>
           <p style="color: #71717a; font-size: 14px; margin-top: 32px;">This secure password reset link will expire shortly.</p>
           <p style="color: #ef4444; font-size: 14px; font-weight: 500;">Security Warning: If you did not request a password reset, please secure your account immediately and ignore this email.</p>
-          <p style="color: #a1a1aa; font-size: 12px; border-top: 1px solid #e4e4e7; padding-top: 16px; margin-top: 32px;">&copy; ${new Date().getFullYear()} SaaS Platform. All rights reserved.</p>
+          <p style="color: #a1a1aa; font-size: 12px; border-top: 1px solid #e4e4e7; padding-top: 16px; margin-top: 32px;">&copy; ${new Date().getFullYear()} Weybre Legal AI. All rights reserved.</p>
         </div>
       `;
       await sendTransactionalEmail(
         user.email,
-        'Reset your password — SaaS Platform',
+        'Reset your password — Weybre Legal AI',
         htmlContent,
       );
     },
@@ -141,17 +141,17 @@ export const auth = betterAuth({
       const htmlContent = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e4e4e7; border-radius: 8px;">
           <h2 style="color: #4f46e5; margin-bottom: 24px;">Verify your email address</h2>
-          <p>Thank you for signing up for SaaS Platform! To complete your registration and secure your account, please verify your email address by clicking the button below:</p>
+          <p>Thank you for signing up for Weybre Legal AI! To complete your registration and secure your account, please verify your email address by clicking the button below:</p>
           <div style="margin: 32px 0; text-align: center;">
             <a href="${safeUrl}" style="background-color: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Verify Email Address</a>
           </div>
           <p style="color: #71717a; font-size: 14px; margin-top: 32px;">This secure verification link will expire shortly.</p>
-          <p style="color: #a1a1aa; font-size: 12px; border-top: 1px solid #e4e4e7; padding-top: 16px; margin-top: 32px;">If you did not create an account on SaaS Platform, please ignore this email.</p>
+          <p style="color: #a1a1aa; font-size: 12px; border-top: 1px solid #e4e4e7; padding-top: 16px; margin-top: 32px;">If you did not create an account on Weybre Legal AI, please ignore this email.</p>
         </div>
       `;
       await sendTransactionalEmail(
         user.email,
-        'Verify your email address — SaaS Platform',
+        'Verify your email address — Weybre Legal AI',
         htmlContent,
       );
     },
@@ -183,7 +183,7 @@ export const auth = betterAuth({
     },
   },
   advanced: {
-    cookiePrefix: 'saas-platform',
+    cookiePrefix: 'weybre-legal-ai',
   },
   trustedOrigins: [frontendUrl],
 });

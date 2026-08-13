@@ -26,11 +26,11 @@ if (process.env.NODE_ENV === 'production' && siteUrl.protocol !== 'https:' && !i
 export const metadata: Metadata = {
   metadataBase: siteUrl,
   title: {
-    default: 'SaaS Platform',
-    template: '%s | SaaS Platform',
+    default: 'Weybre Legal AI',
+    template: '%s | Weybre Legal AI',
   },
-  description: 'Secure account access for SaaS Platform.',
-  applicationName: 'SaaS Platform',
+  description: 'Secure account access for Weybre Legal AI.',
+  applicationName: 'Weybre Legal AI',
   referrer: 'strict-origin-when-cross-origin',
   icons: {
     icon: '/favicon.ico',

@@ -8,8 +8,8 @@ import { Suspense } from 'react';
 export default async function LoginPage() {
   const cookieStore = await cookies();
   const hasSessionCookie = 
-    cookieStore.has('saas-platform_session_token') || 
-    cookieStore.has('__Secure-saas-platform_session_token') ||
+    cookieStore.has('weybre-legal-ai_session_token') || 
+    cookieStore.has('__Secure-weybre-legal-ai_session_token') ||
     cookieStore.has('better-auth.session_token') || 
     cookieStore.has('__Secure-better-auth.session_token');
 

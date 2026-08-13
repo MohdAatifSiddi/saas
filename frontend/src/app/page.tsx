@@ -8,9 +8,9 @@ export default function Home() {
         <div className="mx-auto flex max-w-7xl h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-lg">
-              S
+              W
             </div>
-            <span className="text-xl font-bold text-foreground">SaaS Platform</span>
+            <span className="text-xl font-bold text-foreground">Weybre Legal AI</span>
           </div>
           <div className="flex gap-2">
             <Link href="/login" passHref>
@@ -40,7 +40,7 @@ export default function Home() {
 
       <footer className="border-t border-border bg-card py-6">
         <div className="mx-auto max-w-7xl px-4 text-center text-sm text-muted-foreground">
-          &copy; {new Date().getFullYear()} SaaS Platform. All rights reserved.
+          &copy; {new Date().getFullYear()} Weybre Legal AI. All rights reserved.
         </div>
       </footer>
     </div>

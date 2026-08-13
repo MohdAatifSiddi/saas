@@ -1,7 +1,7 @@
 import { getSessionCookie } from 'better-auth/cookies';
 import { NextResponse, type NextRequest } from 'next/server';
 
-const COOKIE_PREFIX = 'saas-platform';
+const COOKIE_PREFIX = 'weybre-legal-ai';
 const protectedRoutes = ['/dashboard'];
 const authRoutes = ['/login', '/signup', '/forgot-password', '/reset-password', '/verify-email'];
 

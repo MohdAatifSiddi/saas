@@ -2,6 +2,7 @@ import { Controller, Get, UnauthorizedException } from '@nestjs/common';
 import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 import { AppService } from './app.service';
 import { CurrentUser } from './current-user.decorator';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 export type AuthenticatedUser = {
   id: string;
@@ -10,17 +11,26 @@ export type AuthenticatedUser = {
   image?: string | null;
 };
 
+@ApiTags('Core')
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
   @AllowAnonymous()
-  getHello(): string {
-    return this.appService.getHello();
+  @Get('health')
+  @ApiOperation({ summary: 'Health check endpoint' })
+  @ApiResponse({ status: 200, description: 'Service is healthy' })
+  getHealth() {
+    return { status: 'ok', timestamp: new Date().toISOString() };
   }
 
   @Get('dashboard')
+  @ApiOperation({ summary: 'Get user dashboard data' })
+  @ApiResponse({
+    status: 200,
+    description: 'Dashboard data retrieved successfully',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   getDashboard(@CurrentUser() user: unknown) {
     if (!user || typeof user !== 'object') {
       throw new UnauthorizedException('UNAUTHORIZED');
