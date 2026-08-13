@@ -59,7 +59,7 @@ jest.mock('@thallesp/nestjs-better-auth', () => {
 });
 
 // Mock the backend auth config to avoid importing better-auth and transitive ESM dependencies like @noble/hashes during testing
-jest.mock('./auth', () => {
+jest.mock('../src/auth/auth', () => {
   return {
     auth: {
       api: {
@@ -89,7 +89,7 @@ jest.mock('./auth', () => {
   };
 });
 
-import { AppModule } from './app.module';
+import { AppModule } from '../src/app.module';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>;

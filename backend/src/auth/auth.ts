@@ -4,7 +4,7 @@ import { prismaAdapter } from 'better-auth/adapters/prisma';
 import pg from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Resend } from 'resend';
-import { PrismaClient } from './generated/prisma/client';
+import { PrismaClient } from '../generated/prisma/client';
 
 const isProduction = process.env.NODE_ENV === 'production';
 

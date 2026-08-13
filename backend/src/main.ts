@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import type { NextFunction, Request, Response } from 'express';
 import { AppModule } from './app.module';
+import { SafeExceptionFilter } from './common/filters/safe-exception.filter';
 
 function requiredOrigin(name: string, fallback: string): string {
   const value = process.env[name] ?? fallback;
@@ -86,6 +87,8 @@ async function bootstrap() {
       disableErrorMessages: process.env.NODE_ENV === 'production',
     }),
   );
+
+  app.useGlobalFilters(new SafeExceptionFilter());
 
   await app.listen(parsePort(), '0.0.0.0');
 }

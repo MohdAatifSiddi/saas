@@ -6,7 +6,7 @@ export const Permission = {
   TenantAdmin: 'tenant:admin',
 } as const;
 
-export type Permission = typeof Permission[keyof typeof Permission];
+export type Permission = (typeof Permission)[keyof typeof Permission];
 
 export type Principal = {
   userId: string;

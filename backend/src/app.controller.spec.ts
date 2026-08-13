@@ -15,7 +15,7 @@ jest.mock('@thallesp/nestjs-better-auth', () => {
   };
 });
 
-jest.mock('./auth', () => ({
+jest.mock('./auth/auth', () => ({
   auth: {
     api: {
       getSession: jest.fn(),

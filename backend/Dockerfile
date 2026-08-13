@@ -10,8 +10,9 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile --ignore-scripts
 
 FROM deps AS build
-COPY prisma.config.ts schema.prisma nest-cli.json tsconfig*.json .eslint* .prettierrc ./
-COPY *.ts ./
+COPY prisma.config.ts nest-cli.json tsconfig*.json .eslint* .prettierrc ./
+COPY prisma ./prisma
+COPY src ./src
 RUN pnpm prisma generate
 RUN pnpm run build
 
